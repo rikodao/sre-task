@@ -1,0 +1,15 @@
+[Unit]
+Description=Google Cloud Compute Engine SQL Proxy
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/bin
+ExecStart=/bin/cloud-sql-proxy -instances=ca-oiso-test:asia-northeast1:sre-task-db=tcp:5432
+Restart=always
+StandardOutput=journal
+User=root
+
+
+[Install]
+WantedBy=multi-user.target

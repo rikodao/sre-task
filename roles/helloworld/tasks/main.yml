@@ -1,0 +1,41 @@
+---
+# tasks file for helloworld
+
+- name: Update the repository cache and update package "nginx" to latest version using default release squeeze-backport
+  apt:
+      name: nginx
+      state: latest
+      update_cache: yes
+- name: Install cloud-sql-proxy
+  get_url: 
+      url: https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+      dest: /bin/cloud-sql-proxy
+      mode: 0755
+- name: Configure cloud-sql-proxy service
+  template:
+      src: cloud-sql-proxy.service
+      dest: /etc/systemd/system/cloud-sql-proxy.service
+      owner: root
+      group: root
+      mode: 0644
+
+- name: Daemon Reload
+  command: systemctl daemon-reload
+
+- name: Enable cloud-sql-proxy service
+  systemd:
+      name: cloud-sql-proxy
+      enabled: true
+
+
+- name: fetch install-monitoring-agent.sh
+  shell: curl -sSO https://dl.google.com/cloudagents/install-monitoring-agent.sh
+
+- name: execute install monitoring agent
+  shell: bash install-monitoring-agent.sh
+
+- name: fetch install-logging-agent.sh
+  shell: curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
+
+- name: execute install logging agent
+  shell: bash install-logging-agent.sh
